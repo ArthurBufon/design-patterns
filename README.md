@@ -1,6 +1,6 @@
 # 📚 Design Patterns
 
-Repositório de **padrões de projeto**, exemplos práticos e estruturas de referência para desenvolvimento. O conteúdo reflete preferências usadas **profissionalmente** em projetos corporativos e freelance, com foco em organização, SRP e contratos previsíveis.
+Repositório de **padrões de projeto**, exemplos práticos e estruturas de referência para desenvolvimento. O conteúdo reflete preferências usadas **profissionalmente (por mim)** em projetos corporativos e freelance, com foco em organização, SRP e contratos previsíveis.
 
 ---
 
