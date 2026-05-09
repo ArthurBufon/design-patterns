@@ -6,10 +6,13 @@ Um repositório com **padrões de projeto**, exemplos práticas e estruturas rec
 
 ## 📁 Conteúdo
 
-### 🏗️ `/laravel`
+### 🏗️ `/boilerplate-laravel`
 Exemplo de estrutura **padronizada e típica** para um workflow seguindo **SRP (Single Responsibility Principle)**.
 
-### ⚙️ `/cursor`
+### 🏗️ `/boilerplate-geral`
+Exemplo de estrutura **padronizada e típica** para um workflow em qualquer framework/linguagem seguindo **SRP (Single Responsibility Principle)**.
+
+### ⚙️ `./cursor`
 Exemplos de **rules** (regras) para configuração e padrões de comportamento.
 
 Útil como referência para implementar regras em seus próprios projetos.
@@ -80,10 +83,22 @@ Nomenclatura padronizada dos **Resource Controllers do Laravel**, mantida entre 
 | **UPDATE** | PUT `/recurso/{id}` | Atualiza um recurso existente |
 | **DESTROY** | DELETE `/recurso/{id}` | Deleta um recurso |
 
-**Vantagem:** Padrão universal, fácil de manter e transferir entre projetos.
+**Vantagem:** Padrão universal, fácil de manter e transferir entre projetos. Ela é utilizada em Services e Queries também!
 
 ---
 
 ## 🚀 Como usar?
 
 Explore as pastas, estude os exemplos e adapte para seus projetos!
+
+---
+
+## 🤖 Documentação em `/docs` (contexto para IA)
+
+Ao receber prompts sobre uma **feature** ou recurso concreto (especialmente dentro de `boilerplate-laravel`), a IA deve **buscar primeiro em `/docs`** o contexto necessário: regras de domínio, arquivos envolvidos, contratos de retorno e extensões previstas.
+
+- Estrutura sugerida: `docs/features/<nome-da-feature>/specs.md` (ou `spec.md`, conforme o projeto).
+- **Exemplo (carro no boilerplate Laravel):** prompts sobre carro, CRUD de carros, placa, filtros de listagem →  
+  **`boilerplate-laravel/docs/features/carro/specs.md`**
+
+Isso reduz ambiguidade e mantém respostas alinhadas ao que o repositório já definiu.
