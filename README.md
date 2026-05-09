@@ -1,27 +1,28 @@
 # 📚 Design Patterns
 
-Um repositório com **padrões de projeto**, exemplos práticas e estruturas recomendadas para desenvolvimento.
+Repositório de **padrões de projeto**, exemplos práticos e estruturas de referência para desenvolvimento. O conteúdo reflete preferências usadas **profissionalmente** em projetos corporativos e freelance, com foco em organização, SRP e contratos previsíveis.
 
 ---
 
 ## 📁 Conteúdo
 
 ### 🏗️ `/boilerplate-laravel`
-Exemplo de estrutura **padronizada e típica** para um workflow seguindo **SRP (Single Responsibility Principle)**.
+Workflow típico com **SRP**: modelo, queries, services (web e API), helpers, migration e specs. Exemplo de domínio: **Carro**.
 
-### 🏗️ `/boilerplate-geral`
-Exemplo de estrutura **padronizada e típica** para um workflow em qualquer framework/linguagem seguindo **SRP (Single Responsibility Principle)**.
+### 🏗️ `/boilerplate-python`
+Mesmo desenho arquitetural em **Python** (SQLAlchemy 2, PEP 8): queries, services web/API, helpers, SQL de migration e specs. Exemplo: **Carro**.
 
-### ⚙️ `./cursor`
-Exemplos de **rules** (regras) para configuração e padrões de comportamento.
+### ⚙️ `.cursor/`
+Regras de contexto para o Cursor (raiz do repositório e, em cada boilerplate, regras adicionais).
 
-Útil como referência para implementar regras em seus próprios projetos.
+O padrão **queries + services** e a nomenclatura REST dos métodos podem ser replicados em outras stacks; aqui estão **duas implementações de referência** (PHP/Laravel e Python).
 
 ---
 
 ## 🎯 Para quê serve?
 
 Este repositório é uma **coleção de referências** para:
+
 - ✅ Entender padrões de projeto na prática
 - ✅ Consultar estruturas recomendadas
 - ✅ Seguir boas práticas de arquitetura
@@ -30,75 +31,95 @@ Este repositório é uma **coleção de referências** para:
 
 ---
 
-## 🤖 Por que isso é importante?
+## 🤖 Por que documentar e padronizar?
 
-Com o **avanço da IA**, ficou mais importante que nunca:
+Com o **avanço da IA** no desenvolvimento, ficou ainda mais importante:
 
-- **📋 Documentar processos** — IA trabalha melhor com contexto claro
-- **🏛️ Padronizar estruturas** — facilita prompts e geração de código consistente
-- **🎯 Usar SDD (Specification-Driven Development)** — defina regras e padrões antes de codificar
+- **📋 Documentar processos** — menos ambiguidade nas respostas
+- **🏛️ Padronizar estruturas** — prompts e código gerado mais consistentes
+- **🎯 Usar SDD (Specification-Driven Development)** — definir regras e limites antes de implementar, alinhado a `docs/features/`
 
 Uma base bem documentada e padronizada permite que **você e a IA trabalhem juntos de forma mais eficiente e previsível**.
 
 ---
 
-## 📚 Conceitos Principais
+## 📚 Conceitos principais
 
 ### 🔍 **Queries**
 
-Arquivos padronizados para **buscas simples, básicas e reutilizáveis** entre serviços do projeto.
+Camada de **acesso a dados** e consultas **simples, reutilizáveis** entre services (evolução prática do *Repository*, com foco em queries por recurso).
 
-Evolução do **Repository Pattern** com implementação mais prática:
-- 📁 Crie um diretório `/queries`
-- 📄 Um arquivo para cada recurso do projeto
-- 💡 Exemplo: `/queries/carro/queries.py`
+- 📁 Um módulo ou namespace por recurso  
+- 💡 Exemplos: `Queries/Carro/` (Laravel) · `app/queries/carro/` (Python)
 
-**Vantagem:** Consultas reutilizáveis e fáceis de manter.
+**Vantagem:** consultas centralizadas e fáceis de manter.
 
 ---
 
 ### ⚙️ **Services**
 
-Arquivos que lidam com **lógica de negócio específica** para recursos.
+Camada de **orquestração e regras** do recurso: transações, formatação antes de persistir, integração com filas/logs, etc. Métodos comuns espelham o CRUD REST: `index`, `show`, `store`, `update`, `destroy`.
 
-Exemplo: para um recurso "carro", o service implementa métodos como:
-- `criar_carro()` — lógica de criação
-- `validar_carro()` — regras de validação
-- `processar_pagamento()` — operações complexas
-- etc.
-
-**Vantagem:** Separação clara entre dados (queries) e lógica (services).
+**Vantagem:** separação clara entre dados (queries) e lógica de caso de uso (services **orquestram** o fluxo).
 
 ---
 
-## 🎬 Padrão REST: Index/Show/Store/Update/Destroy
+## 🎬 Padrão REST nos nomes dos métodos
 
-Nomenclatura padronizada dos **Resource Controllers do Laravel**, mantida entre projetos de **diferentes linguagens**.
+Nomenclatura alinhada aos **resource controllers** do Laravel, reutilizada nos boilerplates em **outras linguagens** para manter o mesmo vocabulário.
 
-| Método | Operação | Descrição |
-|--------|----------|-----------|
-| **INDEX** | GET `/recurso` | Lista todos os recursos |
-| **SHOW** | GET `/recurso/{id}` | Exibe um recurso individual |
-| **STORE** | POST `/recurso` | Cria um novo recurso |
-| **UPDATE** | PUT `/recurso/{id}` | Atualiza um recurso existente |
-| **DESTROY** | DELETE `/recurso/{id}` | Deleta um recurso |
+| Método | Operação HTTP típica | Descrição |
+|--------|----------------------|-----------|
+| **INDEX** | `GET /recursos` | Lista recursos |
+| **SHOW** | `GET /recursos/{id}` | Um recurso |
+| **STORE** | `POST /recursos` | Cria |
+| **UPDATE** | `PUT` / `PATCH /recursos/{id}` | Atualiza |
+| **DESTROY** | `DELETE /recursos/{id}` | Remove |
 
-**Vantagem:** Padrão universal, fácil de manter e transferir entre projetos. Ela é utilizada em Services e Queries também!
+**OBS:** no endpoint, o recurso costuma ir no **plural** (ex.: `/carros/{id}`). Esses nomes também aparecem em **queries** e **services**.
+
+**Vantagem:** padrão fácil de manter e de transferir entre projetos e linguagens.
+
+---
+
+## 🎬 Retorno padronizado (`sucesso` / `dados` / `erros`)
+
+Além dos dados, os fluxos retornam um **envelope** com estado da operação e mensagens — útil na camada HTTP, em jobs e em testes.
+
+Exemplos (JSON ilustrativo):
+
+```json
+{"sucesso": true, "dados": {"lista": []}, "erros": []}
+```
+
+```json
+{"sucesso": true, "dados": {"quantidade_registros": 2}, "erros": []}
+```
+
+```json
+{"sucesso": false, "dados": {}, "erros": ["Erro ao realizar consulta"]}
+```
+
+**Vantagem:** o chamador sabe explicitamente se houve falha e quais mensagens reportar, sem depender só de exceções ou de “dado vazio”.
 
 ---
 
 ## 🚀 Como usar?
 
-Explore as pastas, estude os exemplos e adapte para seus projetos!
+1. Abra o boilerplate da sua stack (`boilerplate-laravel` ou `boilerplate-python`).
+2. Leia o spec da feature em `docs/features/<nome>/specs.md` quando existir.
+3. Copie ou adapte pastas e convenções para o seu projeto; mantenha queries finas e services como ponto de orquestração.
+
+**🐍 Python:** detalhes de instalação e ambiente em `boilerplate-python/README.md`.
 
 ---
 
 ## 🤖 Documentação em `/docs` (contexto para IA)
 
-Ao receber prompts sobre uma **feature** ou recurso concreto (especialmente dentro de `boilerplate-laravel`), a IA deve **buscar primeiro em `/docs`** o contexto necessário: regras de domínio, arquivos envolvidos, contratos de retorno e extensões previstas.
+Para prompts sobre uma **feature** ou recurso concreto, a IA (e qualquer dev) deve **consultar primeiro o spec**: domínio, arquivos tocados, formato de retorno e extensões previstas.
 
 - Estrutura sugerida: `docs/features/<nome-da-feature>/specs.md` (ou `spec.md`, conforme o projeto).
-- **Exemplo (carro no boilerplate Laravel):** prompts sobre carro, CRUD de carros, placa, filtros de listagem →  
-  **`boilerplate-laravel/docs/features/carro/specs.md`**
+- **Exemplo (carro — Laravel):** `boilerplate-laravel/docs/features/carro/specs.md`
+- **Exemplo (carro — Python):** `boilerplate-python/docs/features/carro/specs.md`
 
-Isso reduz ambiguidade e mantém respostas alinhadas ao que o repositório já definiu.
+Isso reduz ambiguidade e mantém implementações alinhadas ao que o repositório já definiu.
