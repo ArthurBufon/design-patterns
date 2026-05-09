@@ -42,6 +42,90 @@ $mensagem1 = "Atenção: você está com {$percentual}%, abaixo da meta…";
 
 ---
 
+## 🏷️ NOMENCLATURA DE FUNÇÕES (index/show/store/update/destroy)
+
+Usar a nomenclatura RESTful padrão ao máximo, tanto no PHP quanto no React/TS:
+
+| Função    | Propósito                        |
+|-----------|----------------------------------|
+| `index`   | Listar recursos                  |
+| `show`    | Exibir um recurso específico     |
+| `store`   | Criar novo recurso               |
+| `update`  | Atualizar recurso existente      |
+| `destroy` | Remover recurso                  |
+
+**Exceções permitidas** apenas para operações muito específicas sem equivalente REST claro:
+- ✅ `buscarMarcaCarro()`, `calcularImpostoProduto()`, `gerarRelatorioPdf()`
+- ❌ `listar()`, `salvar()`, `buscar()`, `deletar()` — use os nomes padrão
+
+### PHP — Services e Queries
+
+Os métodos de Services e Queries devem seguir essa nomenclatura como padrão:
+
+```php
+// ✅ Correto
+class Service
+{
+    public function index(): Collection {}
+    public function show(int $id): Model {}
+    public function store(array $data): Model {}
+    public function update(int $id, array $data): Model {}
+    public function destroy(int $id): bool {}
+
+    // Exceção válida — operação muito específica
+    public function buscarMarcaCarro(int $carroId): string {}
+}
+```
+
+```php
+// ❌ Evitar
+class Service
+{
+    public function listar(): Collection {}
+    public function buscar(int $id): Model {}
+    public function salvar(array $data): Model {}
+    public function editar(int $id, array $data): Model {}
+    public function deletar(int $id): bool {}
+}
+```
+
+### React — Pages e Queries
+
+**Pages** seguem a mesma lógica de nomenclatura nos arquivos:
+
+```
+Pages/Hospitais/Index.tsx   → listagem de hospitais
+Pages/Hospitais/Show.tsx    → exibir um hospital
+Pages/Hospitais/Create.tsx  → criar hospital
+Pages/Hospitais/Edit.tsx    → editar hospital
+```
+
+**Queries** (em `resources/js/Queries`) devem expor somente funções nomeadas com o padrão REST, agrupadas por recurso em um único arquivo:
+
+```
+Queries/Hospital/Queries.tsx
+```
+
+```ts
+// ✅ Correto
+export const index  = async (): Promise<Hospital[]> => { ... }
+export const show   = async (id: number): Promise<Hospital> => { ... }
+export const store  = async (data: HospitalForm): Promise<Hospital> => { ... }
+export const update = async (id: number, data: HospitalForm): Promise<Hospital> => { ... }
+export const destroy = async (id: number): Promise<void> => { ... }
+
+// Exceção válida
+export const buscarPorCNES = async (cnes: string): Promise<Hospital> => { ... }
+```
+
+```ts
+// ❌ Evitar
+export const listarHospitais = async () => { ... }
+export const salvarHospital  = async () => { ... }
+```
+
+---
+
 ## 🎯 ESTRUTURA DE DIRETÓRIOS PHP
 - Models: `app/Models`
 - Queries: `app/Queries`
