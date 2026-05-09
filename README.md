@@ -1,7 +1,6 @@
 # 📚 Design Patterns
 
 Repositório de **padrões de projeto**, exemplos práticos e estruturas de referência para desenvolvimento. O conteúdo reflete preferências usadas **profissionalmente (por mim)** em projetos corporativos e freelance, com foco em organização, SRP e contratos previsíveis.
-
 Esse repositório não é mais um "guia de boas práticas para stack X", e sim um agregado de preferências **pessoais** que visam melhor organização estrutural
 ---
 
