@@ -1,0 +1,69 @@
+# PHP / Laravel
+
+## Retorno padronizado
+Todo método de service e controller retorna:
+```php
+return ['sucesso' => true, 'dados' => ['model' => $model], 'erros' => []];
+```
+
+## Tratamento de erros em Services
+Todo método público usa `try/catch` com `logarErro` e `formatarMensagemErro`:
+
+```php
+public function store(array $dados): array
+{
+    try {
+        $model = Model::create($dados);
+        return ['sucesso' => true, 'dados' => ['model' => $model], 'erros' => []];
+    } catch (\Throwable $th) {
+        $this->logarErro($dados, 'criar', formatarMensagemErro($th));
+        return ['sucesso' => false, 'dados' => [], 'erros' => [formatarMensagemErro($th)]];
+    }
+}
+
+private function logarErro(array $dados, string $acao, string $mensagemErro): void
+{
+    $mensagem = "Erro ao {$acao} {entidade}!";
+    Log::error($mensagem, ['sucesso' => false, 'dados' => $dados, 'erros' => ["{$mensagem}: {$mensagemErro}"]]);
+}
+```
+- `update` retorna `$model->fresh()`
+- `formatarMensagemErro(\Throwable $th)` — helper global em `app/helpers.php`
+
+## Estrutura
+- Controllers: `app/Http/Controllers/[Modulo]/[Nome]Controller.php`
+- Queries: `app/Queries/[Entidade]/Queries.php`
+- Services: `app/Services/[Entidade]/Service.php`
+- Form Requests: `app/Http/Requests/`
+- URLs: sempre rotas nomeadas com `route()`
+
+## Queries (`app/Queries/`)
+Convenção obrigatória por entidade:
+```php
+public function index(): array        // listar
+public function show(int $id): array  // buscar por ID
+public function store(array $dados)   // inserir
+public function update(array $dados)  // atualizar
+public function destroy(int $id)      // deletar
+```
+- Sem lógica de negócio — apenas SQL/Eloquent
+- Services chamam Queries; Controllers chamam Services
+
+## PHP (estilo)
+- Chaves em todos os control structures
+- Constructor property promotion (PHP 8)
+- Return types e type hints explícitos em todos os métodos
+- Enum keys em TitleCase
+- PHPDoc com array shapes; comentários inline só em lógica complexa
+
+## Sail / Artisan
+- Comandos sempre via `vendor/bin/sail`
+- Criar arquivos: `vendor/bin/sail artisan make:* --no-interaction`
+- Testes: `vendor/bin/sail artisan test --compact --filter=NomeTest`
+- Após alterar PHP: `vendor/bin/sail bin pint --dirty --format agent`
+
+## Nomenclatura
+- `PascalCase` para classes, controllers, models, enums
+- `camelCase` para métodos e variáveis
+- `snake_case` para colunas de banco e arquivos
+- `UPPER_SNAKE_CASE` para constantes
