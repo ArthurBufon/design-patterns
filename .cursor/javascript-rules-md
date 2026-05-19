@@ -1,0 +1,48 @@
+# JavaScript
+
+## Retorno padronizado
+```js
+{ sucesso: true, dados: {}, erros: [] }
+```
+
+## Estrutura de Pages
+- `$(function(){ ... })`
+- Handlers no fim do arquivo
+- Função `inicializar()` sempre presente e chamada no fim
+- Arrow functions
+- Index/Form: `[js_pages_path]/NomeModulo/Index.js` + `Form.js`
+- Services: `[js_services_path]/NomeModulo/Service.js`
+- Queries: `[js_queries_path]/NomeModulo/Queries.js`
+
+## HTTP (obrigatório)
+- **Sempre `fetch`** — proibido `$.ajax`, `jQuery.get/post`, `axios`, `XMLHttpRequest`
+- Requests HTTP apenas em Queries, nunca em Pages
+- Cada método: `async function` + `try/catch` + `route()` + headers (`Accept`, `Content-type`, `X-CSRF-Token`)
+- Catch retorna `{ sucesso: false, dados: [], erros: ['...'] }`
+
+```js
+index: async function (filtros) {
+    try {
+        const url = route("modulo.index.json", filtros);
+        const options = {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-type": "application/json",
+                "X-CSRF-Token": csrfToken,
+            },
+        };
+        const retorno = await fetch(url, options);
+        return await retorno.json();
+    } catch (error) {
+        console.error(error);
+        return { sucesso: false, dados: [], erros: ["Erro ao buscar registros!"] };
+    }
+},
+```
+
+## Nomenclatura
+- `camelCase` para variáveis e funções
+- `PascalCase` para classes
+- `UPPER_SNAKE_CASE` para constantes
+- `kebab-case` para arquivos
